@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Jobs\NotifyUserBySms;
 use App\Mail\CategoryMailTrip;
 use App\Models\Category;
 use App\Models\User;
@@ -46,7 +47,7 @@ class CategoryController extends Controller
         //                 'type'=>1,
         //                 'status'=>1
         //             ])
-        //             ->get();      
+        //             ->get();
         //return $categories;
 
         // $categories = Category::query()
@@ -106,22 +107,22 @@ class CategoryController extends Controller
 
         // $category = new Category;
         $category->fill($request->all())->save();
-        // Mail::to('ibrahim382245@gmail.com')->send(new CategoryMailTrip($category));
-        // notification
-        $user = User::where('email','ibrahim@gmail.com')->first();
-        Notification::send($user,new CategoryNotification());
+        NotifyUserBySms::dispatch();
+
         Session()->flash('alert-success','Resource Added Successfully');
         return redirect()->route('categories.index');
-        
+
+
+        // Mail::to('ibrahim382245@gmail.com')->send(new CategoryMailTrip($category));
+        // notification
+        // $user = User::where('email','ibrahim@gmail.com')->first();
+        // Notification::send($user,new CategoryNotification());
+        // Session()->flash('alert-success','Resource Added Successfully');
+        // return redirect()->route('categories.index');
+
         // Category::create($request->except('_token'));
         //dd('saved');
 
-        //  dump($request->all());
-        //  dump($request->except('_token'));
-        //  dump($request->only([
-        //     'name',
-        //     'status'
-        // ]));
     }
 
     /**
